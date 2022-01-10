@@ -17,4 +17,15 @@ export class UserService {
       console.log(data)
     })
   }
+
+  login(email:string, password:string){
+    const userData = {
+      email:email,
+      password:password
+    }
+    this.http.post("http://localhost:3000/api/user/login", userData).subscribe(data=>{
+      console.log(data);
+    })
+  }
+
 }

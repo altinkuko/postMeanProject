@@ -21,6 +21,7 @@ router.post("/signup", (req, res, next) => {
 
 router.post("/login", (req, res, next) =>
   {
+    let fetchedUser;
     User.findOne({email: req.body.email}).then(
       user =>{
         if (!user){
@@ -28,11 +29,16 @@ router.post("/login", (req, res, next) =>
             message: "User not found"
           });
         }
+        fetchedUser=user;
         return bcrypt.compare(req.body.password, user.password);
     }).then(result=>{
       if (!result){
-        return res.status(201).json({message:"Password not valid"});
+        return res.status(401).json({message:"Password not valid"});
       }
+      const token = jwt.sign({email:fetchedUser.email, userId: fetchedUser._id},
+        "this_is_secret",
+        {expiresIn: "1h"});
+      res.status(200).json({token:token})
     }).catch(err=>{return res.status(401).json({message:"Auth failed"})});
 
   });
