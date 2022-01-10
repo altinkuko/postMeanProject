@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-spinner *ngIf="loading"></mat-spinner>
+  <form (submit)="onSave()" [formGroup]="postForm" *ngIf="!loading">
+    <div>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Title</mat-label>
+        <input type="text" matInput placeholder="Input title" formControlName='title'>
+        <mat-error>Input Something</mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Post</mat-label>
+        <input type="text" matInput placeholder="Input something" formControlName="content">
+        <mat-error>Input Something</mat-error>
+      </mat-form-field>
+    </div>
+    <div style="margin-bottom: 1rem">
+      <button mat-raised-button type="button" (click)="upload.click()">Upload Image</button>
+      <input type="file" #upload (change)="onImagePicked($event)">
+    </div>
+    <div class="image-preview" *ngIf="imageUrl!=='' && imageUrl && postForm.get('image').valid">
+      <img [src]="imageUrl" [alt]="postForm.value.title">
+    </div>
+    <div>
+      <button mat-raised-button color="primary" type="submit" [disabled]="postForm.invalid">Save</button>
+    </div>
+  </form>
+</mat-card>
