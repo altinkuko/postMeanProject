@@ -16,11 +16,12 @@ import {MatIconModule} from "@angular/material/icon";
 import { PostListComponent } from './components/post-list/post-list.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import { HomeComponent } from './components/home/home.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import {AuthInterceptorService} from "./auth/auth-interceptor.service";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,7 @@ import { SignupComponent } from './auth/signup/signup.component';
     MatPaginatorModule,
     FormsModule
   ],
-  providers: [],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass:AuthInterceptorService, multi:true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

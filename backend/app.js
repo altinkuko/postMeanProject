@@ -16,7 +16,7 @@ mongoose.connect('mongodb+srv://admin:Admin1980@cluster0.bl6re.mongodb.net/node-
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT");
     next();
   }
