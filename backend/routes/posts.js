@@ -1,8 +1,9 @@
 const express = require('express');
-const Post = require("../models/post");
 const router = express.Router();
 const multer = require('multer');
 const checkAuth = require("../middleware/check-auth")
+const postService = require("../services/postService")
+
 const MIME_TYPE_MAP = {
   'image/png': 'png',
   'image/jpeg': 'jpeg',
@@ -24,74 +25,14 @@ const storage = multer.diskStorage({
   }
 })
 
-router.post("", checkAuth, multer({storage: storage}).single("image") ,((req, res, next) => {
-  const url = req.protocol+ '://' + req.get("host");
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content,
-    imagePath: url+"/images/" + req.file.filename,
-    creator: req.userData.userId
-  });
-  post.save().then(r => {
-    res.status(200).json(r);
-    console.log(r)});
-}));
+router.post("", checkAuth, multer({storage: storage}).single("image") , postService.createPost);
 
-router.get("",
-  (req, res, next) => {
-  const pageSize = +req.query.pageSize;
-  const currentPage = +req.query.page;
-  const postQuery = Post.find();
-  let result;
-  if (pageSize && currentPage){
-    postQuery.skip(pageSize*(currentPage -1))
-      .limit(pageSize);
-  }
-  postQuery
-      .then(data => {
-        result=data;
-        return Post.count();
-      }).then(count=>{
-    res.status(200).json({posts: result, maxCount : count});
-  });
-  });
+router.get("",postService.getAllPosts);
 
-router.delete('/:id', checkAuth, (req, res, next) => {
-  Post.deleteOne({_id:req.params.id, creator:req.userData.userId}).then(result=>{
-    if (result.deletedCount >0){
-      res.status(200).json({message: "Deleted Successfully"});
-    } else {
-      res.status(403).json({message: "Not Authorized"});
-    }
-  });
-});
+router.delete('/:id', checkAuth, postService.deletePost);
 
-router.put('/:id', checkAuth,
-  multer({storage: storage}).single("image"),(req, res, next) => {
-    const post = req.body;
-    let imagePath = req.body.imagePath;
-    if (req.file){
-    const url = req.protocol+ '://' + req.get("host");
-    imagePath= url+"/images/" + req.file.filename;
-  }
-    post.imagePath = imagePath;
-  Post.updateOne({_id:req.params.id, creator:req.userData.userId}, post).then(result =>{
-    if (result.matchedCount >0){
-      res.status(200).json({message: "Updated Successfully"});
-    } else {
-      res.status(403).json({message: "Not Authorized"});
-    }
-  })
-});
+router.put('/:id', checkAuth, multer({storage: storage}).single("image"), postService.updatePost);
 
-router.get('/:id', (req, res, next) => {
-  Post.findById(req.params.id).then(post=>{
-    if (post){
-      res.status(200).json(post);
-    } else {
-      res.status(404).json({message:'Post not found'});
-    }
-  });
-})
+router.get('/:id', postService.getPostById)
 
 module.exports = router;
