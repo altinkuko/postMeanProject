@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Subject} from "rxjs";
+import {unwrapConstructorDependencies} from "@angular/compiler-cli/src/ngtsc/annotations/src/util";
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,10 @@ export class UserService {
       password: password
     }
     this.http.post("http://localhost:3000/api/user/signup", userData).subscribe(data => {
-      console.log(data)
-    })
+      console.log(data);
+      this.router.navigate([''])
+    }, error => {console.log(error)}
+    )
   }
 
   login(email: string, password: string) {
@@ -30,7 +33,7 @@ export class UserService {
       email: email,
       password: password
     }
-    this.http.post<{ token: string, expiresIn: number }>("http://localhost:3000/api/user/login", userData).subscribe(data => {
+    this.http.post<{ token: string, expiresIn: number, userId:string }>("http://localhost:3000/api/user/login", userData).subscribe(data => {
       const token = data.token;
       if (token) {
         const expiresIn = data.expiresIn;
@@ -41,10 +44,11 @@ export class UserService {
         this.authStatus.next(true);
         const now = new Date();
         const expiration = new Date(now.getTime() + expiresIn * 1000);
-        this.saveToken(token, expiration)
+        this.saveToken(token, expiration, data.userId)
         this.router.navigate(['']);
       }
-    })
+    }, error => {console.log(error)}
+    )
   }
 
 
@@ -53,7 +57,6 @@ export class UserService {
   }
 
   logOut() {
-    sessionStorage.clear();
     this.isLogged = false;
     this.authStatus.next(false);
     clearTimeout(this.tokenTimer)
@@ -77,14 +80,16 @@ export class UserService {
     return this.isLogged;
   }
 
-  private saveToken(token: string, expiresDate: Date) {
+  private saveToken(token: string, expiresDate: Date, userId:string) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expiresDate.toISOString());
+    localStorage.setItem('userId', userId);
   }
 
   private clearToken() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('userId')
   }
 
   private getAuthData() {
@@ -95,7 +100,8 @@ export class UserService {
     }
     return {
       token: token,
-      expirationDate: new Date(expiresIn)
+      expirationDate: new Date(expiresIn),
+      userId: localStorage.getItem('userId')
     }
   }
 

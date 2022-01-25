@@ -33,14 +33,14 @@ router.post("/login", (req, res, next) =>
         return bcrypt.compare(req.body.password, user.password);
     }).then(result=>{
       if (!result){
-        return res.status(401).json({message:"Password not valid"});
+        return res.status(402).json({message:"Password not valid"});
       }
       const token = jwt.sign({email:fetchedUser.email, userId: fetchedUser._id},
         "this_is_secret",
         {expiresIn: "1h"});
-      res.status(200).json({token:token, expiresIn: 3600})
-    }).catch(err=>{return res.status(401).json({message:"Auth failed"})});
-
+      return res.status(200).json({token:token, expiresIn: 3600, userId: fetchedUser._id})
+    }).catch(err=>{
+      return res.status(500)});
   });
 
 

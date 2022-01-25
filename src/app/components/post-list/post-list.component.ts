@@ -20,6 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   private authStatusSub: Subscription;
   isLoggedIn = false;
+  userId:string = localStorage.getItem('userId');
 
   constructor(private postService: PostService, private userService: UserService) {
   }
@@ -55,5 +56,9 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.currentPage = $event.pageIndex + 1;
     this.pageSize = $event.pageSize;
     this.postService.getPosts(this.pageSize, this.currentPage);
+  }
+
+  isCreator(userId:string){
+    return userId === this.userId;
   }
 }
