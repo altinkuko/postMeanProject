@@ -18,7 +18,7 @@ exports.userLogin = (req, res, next) =>
       return res.status(402).json({message:"Password not valid"});
     }
     const token = jwt.sign({email:fetchedUser.email, userId: fetchedUser._id},
-      "this_is_secret",
+      process.env.JWT_KEY,
       {expiresIn: "1h"});
     return res.status(200).json({token:token, expiresIn: 3600, userId: fetchedUser._id})
   }).catch(err=>{

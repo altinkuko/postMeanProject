@@ -2,7 +2,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Subject} from "rxjs";
-import {unwrapConstructorDependencies} from "@angular/compiler-cli/src/ngtsc/annotations/src/util";
+import {environment} from "../../environments/environment";
+
+const BACKEND_URL = environment.apiUrl;
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +24,7 @@ export class UserService {
       email: email,
       password: password
     }
-    this.http.post("http://localhost:3000/api/user/signup", userData).subscribe(data => {
+    this.http.post(BACKEND_URL + "/user/signup", userData).subscribe(data => {
       console.log(data);
       this.router.navigate([''])
     }, error => {console.log(error)}
@@ -33,7 +36,7 @@ export class UserService {
       email: email,
       password: password
     }
-    this.http.post<{ token: string, expiresIn: number, userId:string }>("http://localhost:3000/api/user/login", userData).subscribe(data => {
+    this.http.post<{ token: string, expiresIn: number, userId:string }>(BACKEND_URL + "/user/login", userData).subscribe(data => {
       const token = data.token;
       if (token) {
         const expiresIn = data.expiresIn;

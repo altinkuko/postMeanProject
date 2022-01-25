@@ -9,11 +9,11 @@
     Create Post
   </button>
   <span class="example-spacer"></span>
-  <button *ngIf="!isLoggedIn" routerLink="/signup" routerLinkActive="mat-warn" mat-button>
+  <button *ngIf="!isLoggedIn" routerLink="/auth/signup" routerLinkActive="mat-warn" mat-button>
     <mat-icon>account_circle</mat-icon>
     Signup
   </button>
-  <button *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="mat-warn" mat-button>
+  <button *ngIf="!isLoggedIn" routerLink="/auth/login" routerLinkActive="mat-warn" mat-button>
     <mat-icon>account_box</mat-icon>
       Login
     </button>
