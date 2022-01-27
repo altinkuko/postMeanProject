@@ -23,13 +23,13 @@ app.use((req, res, next) => {
 );
 
 app.use(bodyParser.json());
-app.use("/images", express.static(path.join(__dirname, "backend/images")));
+app.use("/images", express.static(path.join("backend/images")));
 app.use("/", express.static(path.join(__dirname, "angular")));
 app.use(["/api/posts", "/api/post"], postRoutes);
 app.use("/api/user", userRoutes);
-app.use(((req, res, next) => {
+ app.use(((req, res, next) => {
   res.sendFile(path.join(__dirname, "angular", "index.html"));
-}))
+ }))
 
 
 module.exports = app;
