@@ -16,6 +16,7 @@ import {AuthInterceptorService} from "./auth/auth-interceptor.service";
 import {ErrorInterceptor} from "./error-interceptor";
 import { ErrorComponent } from './error/error.component';
 import {AngularMaterialModule} from "./angular-material-module";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {AngularMaterialModule} from "./angular-material-module";
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    MatCheckboxModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass:AuthInterceptorService, multi:true},

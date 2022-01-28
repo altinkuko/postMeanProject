@@ -31,7 +31,7 @@ export class UserService {
     )
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string, remember:boolean) {
     const userData = {
       email: email,
       password: password
@@ -47,7 +47,7 @@ export class UserService {
         this.authStatus.next(true);
         const now = new Date();
         const expiration = new Date(now.getTime() + expiresIn * 1000);
-        this.saveToken(token, expiration, data.userId)
+        this.saveToken(token, expiration, data.userId, remember)
         this.router.navigate(['']);
       }
     }, error => {console.log(error)}
@@ -70,6 +70,7 @@ export class UserService {
 
   getLoggedIn() {
     const authData = this.getAuthData();
+    console.log(authData)
     if (authData !== null) {
       const now = new Date();
       const expiresIn = authData.expirationDate.getTime() - now.getTime();
@@ -80,31 +81,42 @@ export class UserService {
         this.isLogged = false;
       }
     }
+    console.log(this.isLogged)
     return this.isLogged;
   }
 
-  private saveToken(token: string, expiresDate: Date, userId:string) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('expiration', expiresDate.toISOString());
-    localStorage.setItem('userId', userId);
+  private saveToken(token: string, expiresDate: Date, userId:string, remember:boolean) {
+    if (remember){
+      localStorage.setItem('token', token);
+      localStorage.setItem('expiration', expiresDate.toISOString());
+      localStorage.setItem('userId', userId);
+    } else {
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('expiration', expiresDate.toISOString());
+      sessionStorage.setItem('userId', userId);
+    }
+
   }
 
   private clearToken() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
-    localStorage.removeItem('userId')
+    localStorage.removeItem('userId');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('expiration');
+    sessionStorage.removeItem('userId')
   }
 
   private getAuthData() {
-    const token = localStorage.getItem('token');
-    const expiresIn = localStorage.getItem('expiration');
+    const token = localStorage.getItem('token') || sessionStorage.getItem("token");
+    const expiresIn = localStorage.getItem('expiration')|| sessionStorage.getItem("expiration");
     if (!token || !expiresIn) {
       return null;
     }
     return {
       token: token,
       expirationDate: new Date(expiresIn),
-      userId: localStorage.getItem('userId')
+      userId: localStorage.getItem('userId') || sessionStorage.getItem("userId")
     }
   }
 

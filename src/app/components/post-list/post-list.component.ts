@@ -20,7 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   private authStatusSub: Subscription;
   isLoggedIn = false;
-  userId:string = localStorage.getItem('userId');
+  userId:string = localStorage.getItem('userId') || sessionStorage.getItem('userId');
 
   constructor(private postService: PostService, private userService: UserService) {
   }

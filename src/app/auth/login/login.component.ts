@@ -9,6 +9,7 @@ import {UserService} from "../../services/user.service";
 })
 export class LoginComponent implements OnInit {
   loading: boolean = false;
+  rememberMe:boolean = false;
 
   constructor(private userService:UserService) { }
 
@@ -16,6 +17,11 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(loginForm: NgForm) {
-    this.userService.login(loginForm.value.email, loginForm.value.password);
+    console.log(this.rememberMe)
+    this.userService.login(loginForm.value.email, loginForm.value.password, this.rememberMe);
+  }
+
+  remember(){
+    this.rememberMe = !this.rememberMe;
   }
 }
