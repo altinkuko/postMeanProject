@@ -70,7 +70,6 @@ export class UserService {
 
   getLoggedIn() {
     const authData = this.getAuthData();
-    console.log(authData)
     if (authData !== null) {
       const now = new Date();
       const expiresIn = authData.expirationDate.getTime() - now.getTime();
@@ -81,7 +80,6 @@ export class UserService {
         this.isLogged = false;
       }
     }
-    console.log(this.isLogged)
     return this.isLogged;
   }
 

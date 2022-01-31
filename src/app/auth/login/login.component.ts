@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(loginForm: NgForm) {
-    console.log(this.rememberMe)
     this.userService.login(loginForm.value.email, loginForm.value.password, this.rememberMe);
   }
 
